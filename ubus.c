@@ -139,7 +139,7 @@ static void uh_ubus_add_cors_headers(struct client *cl)
 	{
 		char *hdr = (char *) blobmsg_data(tb[HDR_ACCESS_CONTROL_REQUEST_METHOD]);
 
-		if (strcmp(hdr, "POST") && strcmp(hdr, "OPTIONS"))
+		if (strcmp(hdr, "GET") && strcmp(hdr, "POST") && strcmp(hdr, "OPTIONS"))
 			return;
 	}
 
@@ -150,7 +150,7 @@ static void uh_ubus_add_cors_headers(struct client *cl)
 		ustream_printf(cl->us, "Access-Control-Allow-Headers: %s\r\n",
 		               blobmsg_get_string(tb[HDR_ACCESS_CONTROL_REQUEST_HEADERS]));
 
-	ustream_printf(cl->us, "Access-Control-Allow-Methods: POST, OPTIONS\r\n");
+	ustream_printf(cl->us, "Access-Control-Allow-Methods: GET, POST, OPTIONS\r\n");
 	ustream_printf(cl->us, "Access-Control-Allow-Credentials: true\r\n");
 }
 
