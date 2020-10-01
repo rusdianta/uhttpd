@@ -234,6 +234,7 @@ uh_ubus_request_cb(struct ubus_request *req, int ret)
 	struct client *cl = container_of(du, struct client, dispatch.ubus);
 	struct blob_attr *cur;
 	void *r;
+	void *c;
 	int rem;
 
 	blob_buf_init(&buf, 0);
@@ -242,8 +243,14 @@ uh_ubus_request_cb(struct ubus_request *req, int ret)
 	uh_ubus_init_json_rpc_response(cl, &buf);
 	r = blobmsg_open_array(&buf, "result");
 	blobmsg_add_u32(&buf, "", ret);
-	blob_for_each_attr(cur, du->buf.head, rem)
-		blobmsg_add_blob(&buf, cur);
+
+	if (blob_len(du->buf.head)) {
+		c = blobmsg_open_table(&buf, NULL);
+		blob_for_each_attr(cur, du->buf.head, rem)
+			blobmsg_add_blob(&buf, cur);
+		blobmsg_close_table(&buf, c);
+	}
+
 	blobmsg_close_array(&buf, r);
 	uh_ubus_send_response(cl, &buf);
 }
